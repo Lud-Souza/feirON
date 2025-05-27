@@ -1,35 +1,52 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import viteLogo from './assets/vite.svg'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+import { View, Text, Image, Pressable, Linking, StyleSheet } from 'react-native';
+
+export default function App() {
+  const [count, setCount] = useState(0);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <View style={styles.container}>
+      <Pressable onPress={() => Linking.openURL('https://vite.dev')}>
+        <Image
+          source={require('./assets/vite.svg')}
+          
+        />
+      </Pressable>
 
-export default App
+      <Pressable onPress={() => Linking.openURL('https://react.dev')}>
+        <Image
+          source={{ uri: 'https://reactjs.org/logo-og.png' }}
+          style={styles.logo}
+        />
+      </Pressable>
+
+      <Text style={styles.title}>Vite + React Native</Text>
+
+      <Pressable style={styles.button} onPress={() => setCount(count + 1)}>
+        <Text style={styles.buttonText}>count is {count}</Text>
+      </Pressable>
+
+      <Text style={styles.text}>
+        Edit <Text style={styles.code}>App.js</Text> and save to test HMR
+      </Text>
+    </View>
+  );
+}
+const styles = StyleSheet.create({
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  logo: { width: 100, height: 100, margin: 10 },
+  title: { fontSize: 24, fontWeight: 'bold', marginVertical: 20 },
+  button: {
+    backgroundColor: '#646cff',
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 20
+  },
+  buttonText: { color: '#fff', fontSize: 16 },
+  text: { textAlign: 'center', paddingHorizontal: 20 },
+  code: { fontFamily: 'monospace', backgroundColor: '#eee' }
+});
