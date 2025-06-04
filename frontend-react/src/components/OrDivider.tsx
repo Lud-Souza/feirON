@@ -12,7 +12,7 @@ interface OrDividerProps {
 const OrDivider = ({
   dividerClassName = "",
   viewClassName = "",
-  textClassName = "",
+  textClassName = "color-white",
   showText = true,
   width = "100%",
 }: OrDividerProps) => (
@@ -22,9 +22,7 @@ const OrDivider = ({
     {showText ? (
       <>
         <View className={`h-[1px] flex-1 bg-white" ${viewClassName}`} />
-        <Text
-          className={`color-white font-extrabold text-2xl px-4 ${textClassName}`}
-        >
+        <Text className={` font-extrabold text-2xl px-4 ${textClassName}`}>
           ou
         </Text>
         <View className={`h-[1px] flex-1 bg-white" ${viewClassName}`} />

@@ -1,4 +1,5 @@
-import React from "react";
+import Icon from "@/components/Icon";
+import React, { useState } from "react";
 import {
   Keyboard,
   Text,
@@ -6,52 +7,57 @@ import {
   Image,
   TouchableWithoutFeedback,
   View,
+  TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+interface CardItem {
+  id: number;
+  title: string;
+  price: string;
+  image: any;
+}
+
 export default function page() {
-  const cards = [
+  const [viewDatails, setViewDetails] = useState<CardItem | null>(null);
+
+  const cards: CardItem[] = [
     {
       id: 1,
-      title: "Maçã",
+      title: "Tabua de carne - artesanal",
       price: "R$ 5,99 / kg",
-      image:
-        "https://cdn.pixabay.com/photo/2020/04/09/18/03/apple-5024033_960_720.jpg",
+      image: require("@/assets/images/fruits/tabuaDeCarne.jpg"),
     },
     {
       id: 2,
-      title: "Banana",
+      title: "Cenoura",
       price: "R$ 3,49 / kg",
-      image:
-        "https://cdn.pixabay.com/photo/2018/03/07/20/28/bananas-3204203_960_720.jpg",
+      image: require("@/assets/images/fruits/cenoura.jpg"),
     },
     {
       id: 3,
-      title: "Alface",
+      title: "Tomate tradicional",
       price: "R$ 2,99 / un",
-      image:
-        "https://cdn.pixabay.com/photo/2017/03/27/13/58/lettuce-2170743_960_720.jpg",
+      image: require("@/assets/images/fruits/tomate.jpg"),
     },
     {
       id: 4,
-      title: "Tomate",
+      title: "Abóbora cabotia",
       price: "R$ 4,79 / kg",
-      image:
-        "https://cdn.pixabay.com/photo/2015/03/24/08/32/tomatoes-686585_960_720.jpg",
+      image: require("@/assets/images/fruits/abobora.png"),
     },
     {
       id: 5,
-      title: "Cenoura",
+      title: "Abacate verde",
       price: "R$ 3,29 / kg",
-      image:
-        "https://cdn.pixabay.com/photo/2017/01/20/15/06/carrots-1995046_960_720.jpg",
+      image: require("@/assets/images/fruits/abacate.png"),
     },
     {
       id: 6,
-      title: "Morango",
+      title: "Vasilhas de barro",
       price: "R$ 6,99 / bandeja",
-      image:
-        "https://cdn.pixabay.com/photo/2018/01/15/07/51/strawberries-3087127_960_720.jpg",
+      image: require("@/assets/images/fruits/vasilha.png"),
     },
   ];
 
@@ -59,32 +65,92 @@ export default function page() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <SafeAreaView className="flex-1 w-full h-full items-center pt-8">
         <View className="w-full gap-4 bg-primary-green3 justify-center p-4 rounded-md">
-          <Text className=" text-primary-white">Tipos de produtos</Text>
+          <Text className=" text-primary-white text-md font-semibold">
+            Tipos de produtos
+          </Text>
           <TextInput
             placeholder="Todos"
             placeholderTextColor={"#267A76"}
             className="w-full rounded-md p-4 border-primary-green3 bg-white text-primary-green3 font-semibold"
           />
+          <Text className="text-primary-white text-center text-md font-semibold">
+            Selecione um produto para ver mais detalhes!
+          </Text>
         </View>
 
-        <View className="w-full flex-row flex-wrap justify-between px-4 mt-4">
-          {cards.map((item, index) => (
+        {viewDatails && (
+          <>
             <View
-              key={index}
-              className="w-[48%] bg-primary-white rounded-md mb-4 overflow-hidden"
-              style={{ height: 180 }}
+              key={"viewDatails"}
+              className="w-full bg-primary-white rounded-md mb-4 overflow-hidden border-solid border-primary-white border-2"
             >
-              <Image
-                source={require("@/assets/images/icon.png")}
-                className="w-full h-[100px]"
-                resizeMode="contain"
-              />
+              <View className="bg-white">
+                <Image
+                  source={viewDatails?.image}
+                  className="w-full h-[400px]"
+                  resizeMode="cover"
+                />
+              </View>
               <View className="p-2">
-                <Text className="font-semibold text-base">{item.title}</Text>
-                <Text className="text-primary-green3">{item.price}</Text>
+                <Text className="font-semibold text-4xl text-black">
+                  {viewDatails?.title}
+                </Text>
+                <Text className="text-primary-green3 text-2x1">
+                  {viewDatails?.price}
+                </Text>
+              </View>
+
+              <View className="w-full items-center flex-row gap-2 justify-around p-2">
+                <TouchableOpacity
+                  className="w-[49%] justify-center items-center bg-primary-green3 mb-4 rounded-md p-2"
+                  onPress={() => setViewDetails(null)}
+                >
+                  <Text className="text-white text-center">Fechar</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  className="w-[49%] justify-center items-center bg-primary-green3 mb-4 rounded-md p-2 flex-row gap-2"
+                  onPress={() => setViewDetails(null)}
+                >
+                  <Icon name="ShoppingCart" color="white" size={16} />
+
+                  <Text className="text-white text-center">
+                    Adicionar ao carrinho
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
-          ))}
+          </>
+        )}
+
+        <ScrollView className="w-full px-4 mt-4">
+          <View className="flex-row flex-wrap justify-between">
+            {cards.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                className="w-[48%] bg-primary-white rounded-md mb-4 overflow-hidden border-solid border-primary-white border-2"
+                onPress={() => {
+                  setViewDetails(item);
+                }}
+              >
+                <View className="bg-white">
+                  <Image
+                    source={item.image}
+                    className="w-full h-[150px]"
+                    resizeMode="cover"
+                  />
+                </View>
+                <View className="p-2">
+                  <Text className="font-semibold text-base">{item.title}</Text>
+                  <Text className="text-primary-green3">{item.price}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+
+        <View className="w-[15%] absolute bg-primary-green3 bottom-64 right-0 rounded-tl-full rounded-bl-full p-4 pl-6">
+          <Icon name="ShoppingCart" color="white" size={32} />
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
