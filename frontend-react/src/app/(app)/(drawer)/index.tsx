@@ -1,5 +1,7 @@
 import Icon from "@/components/Icon";
 import React, { useState } from "react";
+import { router } from "expo-router";
+
 import {
   Keyboard,
   Text,
@@ -110,7 +112,10 @@ export default function page() {
 
                 <TouchableOpacity
                   className="w-[49%] justify-center items-center bg-primary-green3 mb-4 rounded-md p-2 flex-row gap-2"
-                  onPress={() => setViewDetails(null)}
+                  onPress={() => {
+                    setViewDetails(null);
+                    router.push("/(app)/(drawer)/cart");
+                  }}
                 >
                   <Icon name="ShoppingCart" color="white" size={16} />
 
@@ -149,9 +154,13 @@ export default function page() {
           </View>
         </ScrollView>
 
-        <View className="w-[15%] absolute bg-primary-green3 bottom-64 right-0 rounded-tl-full rounded-bl-full p-4 pl-6">
+        <TouchableOpacity
+          onPress={() => router.push("/(app)/(drawer)/cart")}
+          className="w-[15%] absolute bg-primary-green3 bottom-64 right-0 rounded-tl-full rounded-bl-full p-4 pl-6"
+        >
           <Icon name="ShoppingCart" color="white" size={32} />
-        </View>
+        </TouchableOpacity>
+
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
