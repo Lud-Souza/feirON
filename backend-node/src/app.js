@@ -7,13 +7,13 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Importando rotas
-app.use('/usuarios', require('./routes/usuarioRoutes'));
-app.use('/clientes', require('./routes/clienteRoutes'));
-app.use('/feirantes', require('./routes/feiranteRoutes'));
-app.use('/categorias', require('./routes/categoriaRoutes'));
-app.use('/produtos', require('./routes/produtoRoutes'));
-app.use('/pedidos', require('./routes/pedidoRoutes'));
-app.use('/itens-pedido', require('./routes/itemPedidoRoutes'));
-app.use('/avaliacoes', require('./routes/avaliacaoRoutes'));
+app.use('/usuarios', require('./routes/usuario_routes'));
+app.use('/clientes', require('./routes/cliente_routes'));
+app.use('/feirantes', require('./routes/feirante_routes'));
+app.use('/categorias', require('./routes/categorias_routes'));
+app.use('/produtos', require('./routes/produtos_routes'));
+app.use('/pedidos', require('./routes/pedido_routes'));
+app.use('/itens-pedido', require('./routes/item_pedido_routes'));
+app.use('/avaliacoes', require('./routes/avaliacao_routes'));
 
 module.exports = app;
