@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "db177787-c49f-4095-9345-fb5cb41658ea"
+      }
+    },
+    "owner": "fabrica-software-utfpr",
+    "slug": "feirongit"
+  }
+}
