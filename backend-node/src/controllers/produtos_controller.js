@@ -1,4 +1,4 @@
-const Produto = require('../models/produto');
+const Produto = require('../models/produtos');
 
 exports.getProdutos = (req, res) => {
   res.json(Produto.getAllProdutos());

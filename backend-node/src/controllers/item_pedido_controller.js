@@ -1,4 +1,4 @@
-const Item = require('../models/itemPedido');
+const Item = require('../models/item_pedido');
 
 exports.getItens = (req, res) => {
   res.json(Item.getAllItensPedido());

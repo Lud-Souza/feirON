@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/feiranteController');
+const controller = require('../controllers/feirante_controller');
 
 router.get('/', controller.getFeirantes);
 router.post('/', controller.addFeirante);

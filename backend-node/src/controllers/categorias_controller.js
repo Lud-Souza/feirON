@@ -1,4 +1,4 @@
-const Categoria = require('../models/categoria');
+const Categoria = require('../models/categorias');
 
 exports.getCategorias = (req, res) => {
   res.json(Categoria.getAllCategorias());
