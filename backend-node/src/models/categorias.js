@@ -1,18 +1,19 @@
-const { v4: uuidv4 } = require('uuid');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-let categorias = [];
+const Categoria = sequelize.define('Categoria', {
+  id_categoria: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
+  },
+  nome: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }
+}, {
+  tableName: 'categorias',
+  timestamps: false
+});
 
-function getAllCategorias() {
-  return categorias;
-}
-
-function createCategoria({ nome }) {
-  const nova = {
-    id_categoria: uuidv4(),
-    nome
-  };
-  categorias.push(nova);
-  return nova;
-}
-
-module.exports = { getAllCategorias, createCategoria };
+module.exports = Categoria;

@@ -1,22 +1,35 @@
-const { v4: uuidv4 } = require('uuid');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-let avaliacoes = [];
+const Avaliacao = sequelize.define('Avaliacao', {
+  id_avaliacao: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
+  },
+  id_cliente: {
+    type: DataTypes.UUID,
+    allowNull: false
+  },
+  id_produto: {
+    type: DataTypes.UUID,
+    allowNull: false
+  },
+  nota: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  comentario: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  data_avaliacao: {
+    type: DataTypes.DATE,
+    allowNull: false
+  }
+}, {
+  tableName: 'avaliacoes',
+  timestamps: false
+});
 
-function getAllAvaliacoes() {
-  return avaliacoes;
-}
-
-function createAvaliacao({ id_cliente, id_produto, nota, comentario, data_avaliacao }) {
-  const nova = {
-    id_avaliacao: uuidv4(),
-    id_cliente,
-    id_produto,
-    nota,
-    comentario,
-    data_avaliacao
-  };
-  avaliacoes.push(nova);
-  return nova;
-}
-
-module.exports = { getAllAvaliacoes, createAvaliacao };
+module.exports = Avaliacao;

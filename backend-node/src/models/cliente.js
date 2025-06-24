@@ -1,19 +1,23 @@
-const { v4: uuidv4 } = require('uuid');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-let clientes = [];
+const Cliente = sequelize.define('Cliente', {
+  id_cliente: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
+  },
+  id_usuario: {
+    type: DataTypes.UUID,
+    allowNull: false
+  },
+  endereco_entrega: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }
+}, {
+  tableName: 'clientes',
+  timestamps: false
+});
 
-function getAllClientes() {
-  return clientes;
-}
-
-function createCliente({ id_usuario, endereco_entrega }) {
-  const novo = {
-    id_cliente: uuidv4(),
-    id_usuario,
-    endereco_entrega
-  };
-  clientes.push(novo);
-  return novo;
-}
-
-module.exports = { getAllClientes, createCliente };
+module.exports = Cliente;

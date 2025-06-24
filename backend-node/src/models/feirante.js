@@ -1,21 +1,31 @@
-const { v4: uuidv4 } = require('uuid');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-let feirantes = [];
+const Feirante = sequelize.define('Feirante', {
+  id_feirante: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
+  },
+  id_usuario: {
+    type: DataTypes.UUID,
+    allowNull: false
+  },
+  nome_estabelecimento: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  descricao: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  localizacao: {
+    type: DataTypes.STRING,
+    allowNull: true
+  }
+}, {
+  tableName: 'feirantes',
+  timestamps: false
+});
 
-function getAllFeirantes() {
-  return feirantes;
-}
-
-function createFeirante({ id_usuario, nome_estabelecimento, descricao, localizacao }) {
-  const novo = {
-    id_feirante: uuidv4(),
-    id_usuario,
-    nome_estabelecimento,
-    descricao,
-    localizacao
-  };
-  feirantes.push(novo);
-  return novo;
-}
-
-module.exports = { getAllFeirantes, createFeirante };
+module.exports = Feirante;

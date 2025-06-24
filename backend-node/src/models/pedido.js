@@ -1,21 +1,31 @@
-const { v4: uuidv4 } = require('uuid');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-let pedidos = [];
+const Pedido = sequelize.define('Pedido', {
+  id_pedido: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
+  },
+  id_cliente: {
+    type: DataTypes.UUID,
+    allowNull: false
+  },
+  data_pedido: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  status: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  valor_total: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false
+  }
+}, {
+  tableName: 'pedidos',
+  timestamps: false
+});
 
-function getAllPedidos() {
-  return pedidos;
-}
-
-function createPedido({ id_cliente, data_pedido, status, valor_total }) {
-  const novo = {
-    id_pedido: uuidv4(),
-    id_cliente,
-    data_pedido,
-    status,
-    valor_total
-  };
-  pedidos.push(novo);
-  return novo;
-}
-
-module.exports = { getAllPedidos, createPedido };
+module.exports = Pedido;

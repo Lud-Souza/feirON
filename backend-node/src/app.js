@@ -1,8 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const sequelize = require('./config/database');
+
+
+// Importar relacionamento para registrar as associações
+require('./models/relacoes');
+
 
 const app = express();
+
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -16,4 +23,16 @@ app.use('/pedidos', require('./routes/pedido_routes'));
 app.use('/itens-pedido', require('./routes/item_pedido_routes'));
 app.use('/avaliacoes', require('./routes/avaliacao_routes'));
 
-module.exports = app;
+// Sincroniza o banco e inicia o servidor
+const PORT = process.env.PORT || 3000;
+
+sequelize.sync()
+  .then(() => {
+    console.log('Banco sincronizado com sucesso!');
+    app.listen(PORT, () => {
+      console.log(`Servidor rodando na porta ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Erro ao sincronizar banco:', err);
+  });
