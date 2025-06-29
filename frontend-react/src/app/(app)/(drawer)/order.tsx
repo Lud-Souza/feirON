@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,9 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "@/components/Icon"; // seu componente de ícones
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "expo-router";
+import { DrawerActions } from "@react-navigation/native";
 
 const orders = [
   {
@@ -25,34 +28,34 @@ const orders = [
 ];
 
 export default function OrdersScreen() {
+  const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+          style={{ marginLeft: 16 }}
+        >
+          <Ionicons name="menu" size={28} color="#267A76" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <View
-        style={{ backgroundColor: "#EBD380" }}
-        className="w-full px-4 py-4 flex-row items-center justify-between"
-      >
-        <TouchableOpacity>
-          <Icon name="Menu" size={24} color="black" />
-        </TouchableOpacity>
-
-        <Text className="text-xl font-bold text-gray-700">PEDIDOS</Text>
-
-        <TouchableOpacity>
-          <Icon name="Search" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
-
+    <View className="flex-1 bg-white">
       <ImageBackground
         source={require("@/assets/images/fruits/frutasfundo.png")}
         resizeMode="cover"
-        className="flex-1 px-4 pt-4"
+        className="flex-1"
       >
-        <ScrollView className="space-y-6 pb-6">
+        <ScrollView className="w-full px-4 mt-4">
           {orders.map((order) => (
             <View
               key={order.id}
               style={{ backgroundColor: "#EBD380" }}
-              className="p-4 rounded-lg shadow-sm"
+              className="p-4 rounded-lg shadow-sm mb-4"
             >
               <View className="flex-row justify-between">
                 <Text className="font-bold">PEDIDO - {order.id}</Text>
@@ -89,6 +92,6 @@ export default function OrdersScreen() {
           ))}
         </ScrollView>
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
 }

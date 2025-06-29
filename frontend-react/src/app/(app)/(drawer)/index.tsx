@@ -1,6 +1,10 @@
 import Icon from "@/components/Icon";
 import React, { useState } from "react";
 import { router } from "expo-router";
+import { useNavigation, DrawerActions } from "@react-navigation/native";
+import { useLayoutEffect } from "react";
+import { TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 import {
   Keyboard,
@@ -9,10 +13,8 @@ import {
   Image,
   TouchableWithoutFeedback,
   View,
-  TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 interface CardItem {
   id: number;
@@ -21,8 +23,9 @@ interface CardItem {
   image: any;
 }
 
-export default function page() {
+export default function Page() {
   const [viewDatails, setViewDetails] = useState<CardItem | null>(null);
+  const navigation = useNavigation();
 
   const cards: CardItem[] = [
     {
@@ -63,10 +66,23 @@ export default function page() {
     },
   ];
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+          style={{ marginLeft: 16 }}
+        >
+          <Ionicons name="menu" size={28} color="#267A76" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <SafeAreaView className="flex-1 w-full h-full items-center pt-8">
-        <View className="w-full gap-4 bg-primary-green3 justify-center p-4 rounded-md">
+      <View className="flex-1 bg-primary-green3">
+        <View className="w-full gap-4 bg-primary-green3 justify-center p-4 ">
           <Text className=" text-primary-white text-md font-semibold">
             Tipos de produtos
           </Text>
@@ -160,8 +176,7 @@ export default function page() {
         >
           <Icon name="ShoppingCart" color="white" size={32} />
         </TouchableOpacity>
-
-      </SafeAreaView>
+      </View>
     </TouchableWithoutFeedback>
   );
 }
