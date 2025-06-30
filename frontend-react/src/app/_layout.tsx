@@ -10,6 +10,8 @@ import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+import { Provider as CartContext } from "@/context/cartContext";
+
 export default function Layout() {
   const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -43,14 +45,15 @@ export default function Layout() {
     );
   }
 
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
           <ClerkLoaded>
             <SessionProvider>
-              <InitialLayout />
+              <CartContext>
+                <InitialLayout />
+              </CartContext>
             </SessionProvider>
           </ClerkLoaded>
         </ClerkProvider>

@@ -4,9 +4,7 @@ import AppHeader from "../../../components/AppHeader";
 
 export default function DrawerLayout() {
   return (
-    <Drawer
-      drawerContent={(props) => <CustomDrawerContent {...props} />}
-    >
+    <Drawer drawerContent={(props) => <CustomDrawerContent {...props} />}>
       <Drawer.Screen
         name="index"
         options={{
@@ -27,7 +25,7 @@ export default function DrawerLayout() {
       />
 
       <Drawer.Screen
-        name="order" 
+        name="order"
         options={{
           header: ({ navigation }) => (
             <AppHeader title="MEUS PEDIDOS" navigation={navigation} />
@@ -35,7 +33,7 @@ export default function DrawerLayout() {
           headerShown: true,
         }}
       />
-      
+
       <Drawer.Screen
         name="favorites"
         options={{
@@ -73,11 +71,26 @@ export default function DrawerLayout() {
         }}
       />
 
-      <Drawer.Screen name="seller" options={{ drawerItemStyle: { display: 'none' } }}/>
-      <Drawer.Screen name="fairs" options={{ drawerItemStyle: { display: 'none' } }}/>
-      <Drawer.Screen name="address-form" options={{ drawerItemStyle: { display: 'none' } }}/>
-      <Drawer.Screen name="edit-fair-form" options={{ drawerItemStyle: { display: 'none' } }}/>
-      <Drawer.Screen name="edit-seller-form" options={{ drawerItemStyle: { display: 'none' } }}/>
+      <Drawer.Screen
+        name="seller"
+        options={{ drawerItemStyle: { display: "none" } }}
+      />
+      <Drawer.Screen
+        name="fairs"
+        options={{ drawerItemStyle: { display: "none" } }}
+      />
+      <Drawer.Screen
+        name="address-form"
+        options={{ drawerItemStyle: { display: "none" } }}
+      />
+      <Drawer.Screen
+        name="edit-fair-form"
+        options={{ drawerItemStyle: { display: "none" } }}
+      />
+      <Drawer.Screen
+        name="edit-seller-form"
+        options={{ drawerItemStyle: { display: "none" } }}
+      />
     </Drawer>
   );
 }

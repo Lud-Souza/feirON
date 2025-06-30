@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { useUser } from '@clerk/clerk-expo'; // ou '@clerk/clerk-react' para Web
 
 type ProfileInputProps = {
   label: string;
@@ -27,12 +28,26 @@ const ProfileInput = ({ label, value, onChangeText, placeholder, secureTextEntry
 );
 
 export default function ProfileScreen() {
+  const { user } = useUser();
+
   const [nome, setNome] = useState('');
-  const [cpf, setCpf] = useState('');
+  const [cpf, setCpf] = useState(''); // Clerk não fornece CPF nativamente, talvez você armazene em metadata
   const [telefone, setTelefone] = useState('');
   const [email, setEmail] = useState('');
   const [novaSenha, setNovaSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
+
+  useEffect(() => {
+    if (user) {
+      setNome(user.fullName || '');
+      setEmail(user.emailAddresses[0]?.emailAddress || '');
+      setTelefone(user.phoneNumbers[0]?.phoneNumber || '');
+
+      // Se você salva o CPF em metadata:
+      const cpfFromMetadata = user.publicMetadata?.cpf as string;
+      if (cpfFromMetadata) setCpf(cpfFromMetadata);
+    }
+  }, [user]);
 
   const handleSaveChanges = () => {
     Alert.alert("Sucesso", "Suas informações foram salvas!");
@@ -45,23 +60,20 @@ export default function ProfileScreen() {
   return (
     <View className="flex-1" style={{ backgroundColor: '#F7F6F1' }}>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
-        <View className="mb-4">
+        {/* <View className="mb-4">
           <Text className="text-sm font-bold text-gray-600 mb-1 ml-1">TIPO CADASTRO</Text>
           <View className="bg-[#BDCE82] rounded-lg p-3 flex-row justify-between items-center">
             <Text className="text-gray-800 text-base font-semibold">NORMAL</Text>
             <FontAwesome name="chevron-down" size={16} color="#555" />
           </View>
-        </View>
+        </View> */}
 
         <ProfileInput label="NOME" value={nome} onChangeText={setNome} />
-
         <ProfileInput label="CPF" value={cpf} onChangeText={setCpf} />
-
         <ProfileInput label="TELEFONE" value={telefone} onChangeText={setTelefone} />
-        
         <ProfileInput label="EMAIL" value={email} onChangeText={setEmail} />
 
-        <ProfileInput label="SENHA" value="********" editable={false} />
+        <ProfileInput label="SENHA" placeholder="********" value='' editable={false} />
         
         <ProfileInput
           label="ALTERAR SENHA"

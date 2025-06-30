@@ -1,10 +1,12 @@
 import Icon from "@/components/Icon";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { router } from "expo-router";
 import { useNavigation, DrawerActions } from "@react-navigation/native";
 import { useLayoutEffect } from "react";
 import { TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+
+import { Context as CartContext } from "@/context/cartContext";
 
 import {
   Keyboard,
@@ -24,13 +26,17 @@ interface CardItem {
 }
 
 export default function Page() {
-  const [viewDatails, setViewDetails] = useState<CardItem | null>(null);
   const navigation = useNavigation();
+
+  const { stateCart, setCart, setFavorites } = useContext(CartContext);
+
+  const [viewDetails, setViewDetails] = useState<CardItem | null>(null);
+  const [query, setQuery] = useState("");
 
   const cards: CardItem[] = [
     {
       id: 1,
-      title: "Tabua de carne - artesanal",
+      title: "Tabua de carne",
       price: "R$ 5,99 / kg",
       image: require("@/assets/images/fruits/tabuaDeCarne.jpg"),
     },
@@ -66,6 +72,44 @@ export default function Page() {
     },
   ];
 
+  const addProductToCart = () => {
+    if (viewDetails) {
+      const updatedCart = [
+        ...(Array.isArray(stateCart.cart) ? stateCart.cart : []),
+        viewDetails,
+      ];
+      setCart(updatedCart);
+      setViewDetails(null);
+    }
+  };
+
+  const addToFavorites = () => {
+    if (!viewDetails) return;
+
+    const isAlreadyFavorite = stateCart.favorites?.some(
+      (fav) => fav.id === viewDetails.id
+    );
+
+    let updatedFavorites;
+
+    if (isAlreadyFavorite) {
+      updatedFavorites = stateCart.favorites.filter(
+        (fav) => fav.id !== viewDetails.id
+      );
+    } else {
+      updatedFavorites = [
+        ...(Array.isArray(stateCart.favorites) ? stateCart.favorites : []),
+        viewDetails,
+      ];
+    }
+
+    setFavorites(updatedFavorites);
+  };
+
+  const isFavorite = (item: CardItem) => {
+    return stateCart.favorites?.some((fav) => fav.id === item.id);
+  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
@@ -79,32 +123,37 @@ export default function Page() {
     });
   }, [navigation]);
 
+  const result =
+    query.length <= 0 ? cards : cards.filter((e) => e.title.includes(query));
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View className="flex-1 bg-primary-green3">
         <View className="w-full gap-4 bg-primary-green3 justify-center p-4 ">
           <Text className=" text-primary-white text-md font-semibold">
-            Tipos de produtos
+            Filtro de produtos
           </Text>
           <TextInput
-            placeholder="Todos"
+            placeholder="Pesquise aqui..."
             placeholderTextColor={"#267A76"}
             className="w-full rounded-md p-4 border-primary-green3 bg-white text-primary-green3 font-semibold"
+            value={query}
+            onChangeText={(e) => setQuery(e)}
           />
           <Text className="text-primary-white text-center text-md font-semibold">
             Selecione um produto para ver mais detalhes!
           </Text>
         </View>
 
-        {viewDatails && (
+        {viewDetails && (
           <>
             <View
-              key={"viewDatails"}
+              key={"viewDetails"}
               className="w-full bg-primary-white rounded-md mb-4 overflow-hidden border-solid border-primary-white border-2"
             >
               <View className="bg-white">
                 <Image
-                  source={viewDatails?.image}
+                  source={viewDetails?.image}
                   className="w-full h-[400px]"
                   resizeMode="cover"
                 />
@@ -112,14 +161,20 @@ export default function Page() {
               <View className="p-4">
                 <View className="w-full flex-row justify-between">
                   <Text className="font-semibold text-4xl text-black">
-                    {viewDatails?.title}
+                    {viewDetails?.title}
                   </Text>
 
-                  <Icon name="Heart" color="red" size={32} />
+                  <TouchableOpacity onPress={addToFavorites}>
+                    <Icon
+                      name="Heart"
+                      color={isFavorite(viewDetails) ? "red" : "gray"}
+                      size={32}
+                    />
+                  </TouchableOpacity>
                 </View>
 
                 <Text className="text-primary-green3 text-2x1">
-                  {viewDatails?.price}
+                  {viewDetails?.price}
                 </Text>
               </View>
 
@@ -133,10 +188,7 @@ export default function Page() {
 
                 <TouchableOpacity
                   className="w-[49%] justify-center items-center bg-primary-green3 mb-4 rounded-md p-2 flex-row gap-2"
-                  onPress={() => {
-                    setViewDetails(null);
-                    router.push("/(app)/(drawer)/cart");
-                  }}
+                  onPress={addProductToCart}
                 >
                   <Icon name="ShoppingCart" color="white" size={16} />
 
@@ -151,7 +203,7 @@ export default function Page() {
 
         <ScrollView className="w-full px-4 mt-4">
           <View className="flex-row flex-wrap justify-between">
-            {cards.map((item, index) => (
+            {result.map((item, index) => (
               <TouchableOpacity
                 key={index}
                 className="w-[48%] bg-primary-white rounded-md mb-4 overflow-hidden border-solid border-primary-white border-2"
@@ -168,10 +220,19 @@ export default function Page() {
                 </View>
                 <View className="p-2">
                   <View className="w-full flex-row justify-between">
-                    <Text className="font-semibold text-2xl">
-                      {item.title}
-                    </Text>
-                    <Icon name="Heart" color="red" size={24} />
+                    <Text className="font-semibold text-lg">{item.title}</Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setViewDetails(item);
+                        setTimeout(addToFavorites, 0);
+                      }}
+                    >
+                      <Icon
+                        name="Heart"
+                        color={isFavorite(item) ? "red" : "gray"}
+                        size={24}
+                      />
+                    </TouchableOpacity>
                   </View>
                   <Text className="text-primary-green3">{item.price}</Text>
                 </View>
@@ -180,12 +241,15 @@ export default function Page() {
           </View>
         </ScrollView>
 
-        <TouchableOpacity
-          onPress={() => router.push("/(app)/(drawer)/cart")}
-          className="w-[15%] absolute bg-primary-green3 bottom-64 right-0 rounded-tl-full rounded-bl-full p-4 pl-6"
-        >
-          <Icon name="ShoppingCart" color="white" size={32} />
-        </TouchableOpacity>
+        {!viewDetails && (
+          <TouchableOpacity
+            onPress={() => router.push("/(app)/(drawer)/cart")}
+            className="w-[15%] absolute bg-primary-green3 bottom-64 right-0 rounded-tl-full rounded-bl-full p-4 pl-6 flex-row"
+          >
+            <Icon name="ShoppingCart" color="white" size={32} />
+            <Text className="text-white">{stateCart.cart?.length}</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </TouchableWithoutFeedback>
   );

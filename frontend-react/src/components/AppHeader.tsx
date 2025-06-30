@@ -36,7 +36,6 @@ export default function AppHeader({ title, navigation }: AppHeaderProps) {
       <Text className="text-xl font-bold text-gray-800">{title}</Text>
 
       <TouchableOpacity className="p-2">
-        <Icon name="Search" size={24} color="#333" />
       </TouchableOpacity>
     </View>
   );
