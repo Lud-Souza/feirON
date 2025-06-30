@@ -1,23 +1,97 @@
+import { useUser, useOAuth, useSignIn } from "@clerk/clerk-expo";
+import * as WebBrowser from "expo-web-browser";
+import React, { useState, useCallback, useEffect } from "react";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  Alert,
+  ImageBackground,
+  TextInput,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
+import * as LinkingExpo from "expo-linking";
 import AppLogo from "@/components/AppLogo";
+import { SafeAreaView } from "react-native-safe-area-context";
 import OrDivider from "@/components/OrDivider";
 import { router } from "expo-router";
-import React from "react";
-import {
-  Keyboard,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+
+export const useWarmUpBrowser = () => {
+  useEffect(() => {
+    void WebBrowser.warmUpAsync();
+    return () => {
+      void WebBrowser.coolDownAsync();
+    };
+  }, []);
+};
+
+WebBrowser.maybeCompleteAuthSession();
+
+type OAuthStrategy = "oauth_google";
+type ProcessingState = OAuthStrategy | "guest" | null;
 
 export default function SignInScreen() {
-  
+  useWarmUpBrowser();
+
+  const { user, isLoaded } = useUser();
+  const { setActive } = useSignIn();
+
+  const [isProcessing, setIsProcessing] = useState<ProcessingState>(null);
+
   function fnLogin() {
     router.replace("/(app)/(drawer)");
   }
 
+  const { startOAuthFlow: startGoogleAuth } = useOAuth({
+    strategy: "oauth_google",
+  });
+  const { startOAuthFlow: startFacebookAuth } = useOAuth({
+    strategy: "oauth_facebook",
+  });
+  const { startOAuthFlow: startGithubAuth } = useOAuth({
+    strategy: "oauth_github",
+  });
+
+  const handleSocialSignIn = useCallback(
+    async (strategy: OAuthStrategy) => {
+      let oauthFlowFunction;
+      switch (strategy) {
+        case "oauth_google":
+          oauthFlowFunction = startGoogleAuth;
+          break;
+        default:
+          return;
+      }
+
+      setIsProcessing(strategy);
+      try {
+        const { createdSessionId, setActive: setOAuthActive } =
+          await oauthFlowFunction({
+            redirectUrl: LinkingExpo.createURL("/(tabs)", {
+              scheme: "caloriecare",
+            }),
+          });
+        if (createdSessionId && setOAuthActive) {
+          await setOAuthActive({ session: createdSessionId });
+        }
+      } catch (err: any) {
+        console.error(
+          `${strategy} OAuth error`,
+          err.errors ? JSON.stringify(err.errors) : err
+        );
+        Alert.alert(
+          "Erro de Autenticação",
+          err.errors
+            ? err.errors[0]?.longMessage || err.errors[0]?.message
+            : "Não foi possível fazer login com este provedor."
+        );
+      } finally {
+        setIsProcessing(null);
+      }
+    },
+    [startGoogleAuth, startFacebookAuth, startGithubAuth, setActive]
+  );
 
   return (
     <>
@@ -65,9 +139,15 @@ export default function SignInScreen() {
             viewClassName="bg-primary-green3"
           />
 
-          <TouchableOpacity className="w-[45%] rounded-md p-4 border-primary-green3 bg-primary-green3  items-center mt-2">
+          <TouchableOpacity
+            className="w-[45%] rounded-md p-4 border-primary-green3 bg-primary-green3  items-center mt-2"
+            onPress={() => handleSocialSignIn("oauth_google")}
+            disabled={isProcessing !== null || !isLoaded}
+          >
             <Text className="text-center text-white font-bold">
-              Entrar com GOOGLE
+              {isProcessing === "oauth_google"
+                ? "Conectando..."
+                : "Continuar com Google"}
             </Text>
           </TouchableOpacity>
         </SafeAreaView>

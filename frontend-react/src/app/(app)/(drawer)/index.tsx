@@ -66,7 +66,7 @@ export default function page() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <SafeAreaView className="flex-1 w-full h-full items-center pt-8">
-        <View className="w-full gap-4 bg-primary-green3 justify-center p-4 rounded-md">
+        <View className="w-full gap-4 bg-primary-green3 justify-center p-4 rounded-br-md rounded-bl-md">
           <Text className=" text-primary-white text-md font-semibold">
             Tipos de produtos
           </Text>
@@ -93,10 +93,15 @@ export default function page() {
                   resizeMode="cover"
                 />
               </View>
-              <View className="p-2">
-                <Text className="font-semibold text-4xl text-black">
-                  {viewDatails?.title}
-                </Text>
+              <View className="p-4">
+                <View className="w-full flex-row justify-between">
+                  <Text className="font-semibold text-4xl text-black">
+                    {viewDatails?.title}
+                  </Text>
+
+                  <Icon name="Heart" color="red" size={32} />
+                </View>
+
                 <Text className="text-primary-green3 text-2x1">
                   {viewDatails?.price}
                 </Text>
@@ -146,7 +151,12 @@ export default function page() {
                   />
                 </View>
                 <View className="p-2">
-                  <Text className="font-semibold text-base">{item.title}</Text>
+                  <View className="w-full flex-row justify-between">
+                    <Text className="font-semibold text-2xl">
+                      {item.title}
+                    </Text>
+                    <Icon name="Heart" color="red" size={24} />
+                  </View>
                   <Text className="text-primary-green3">{item.price}</Text>
                 </View>
               </TouchableOpacity>
